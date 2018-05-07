@@ -1,13 +1,13 @@
 .graph-container{
 	position: absolute;
 	display: inline-block;
-	height: 800px;
-	width: 500px;
+	height: 1500px;
+	width: 1500px;
 	border: 1px solid black;
 }
 
 #graph-edges{
-	background-color: #CECECE;
+	background-color: #fff;
 }
 
 #graph-nodes{
@@ -25,7 +25,7 @@
 	border: 3px solid black;
 	border-radius: 10px;
 	min-width: 20px;
-	background-color: white;
+	background-color: #ffab28;
 	z-index: 1;
 	cursor: move !important;
 	margin: 0px;
@@ -62,15 +62,12 @@
 }
 
 .port{
-	height: 7.5px;
+	height: 15px;
 	width: 15px;
 	border: 2px solid black;
-	border-radius: 50%;
 	display: inline-block;
-	background-color: black;
+	background-color: #02bb01;
 	margin: 0px 2px;
-	border-top-right-radius: 15px;
-	border-top-left-radius: 15px;
 	z-index: 3;
 }
 
