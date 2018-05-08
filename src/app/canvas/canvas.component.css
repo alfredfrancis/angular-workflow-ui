@@ -1,7 +1,7 @@
 .graph-container{
 	position: absolute;
 	display: inline-block;
-	height: 1500px;
+	height: 600px;
 	width: 1500px;
 	border: 1px solid black;
 }
