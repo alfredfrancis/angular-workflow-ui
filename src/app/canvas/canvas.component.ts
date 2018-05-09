@@ -27,7 +27,6 @@ export class CanvasComponent implements OnInit {
       // {
       //  ""startNode":
       //  " endNode"
-      //   "node":"node_1" 
       //   "start":"node_1_output_1",
       //   "end":"node_2_input"
       // }
@@ -44,7 +43,11 @@ export class CanvasComponent implements OnInit {
     startPortNode:any;
     endPortNode:any;
 
-  	constructor() { }
+    constructor() { }
+
+
+
+
  	  
     ngOnInit() {
       this.canvas = <HTMLCanvasElement>document.getElementById('graph-edges');
@@ -56,6 +59,7 @@ export class CanvasComponent implements OnInit {
       }) 
     }
     
+
     ngAfterViewInit(){
       // Render Flow connections from JSON Data
       this.drawConnections()
@@ -98,6 +102,20 @@ export class CanvasComponent implements OnInit {
     }
 
 
+    mouseEnter(events){
+      if (this.drawing){
+        //console.log("mouse enter : " + events.x);
+        //console.log("mouse enter : " + events.y);
+        this.refreshCanvas();
+        this.drawLine(this.startPosition.pageX,this.startPosition.pageY,events.x,events.y);
+        this.drawConnections()
+        //this.refreshCanvas();
+       
+
+      }
+      
+   }
+
 
     getPositionByID(div_id) {
       // find position of html element by its ID
@@ -117,6 +135,7 @@ export class CanvasComponent implements OnInit {
       node.dragStart = {x: $event.pageX, y: $event.pageY}; 
     }
 
+    
     onDrag($event, node): void{
       //let canvas :HTMLCanvasElement = <HTMLCanvasElement>document.getElementById('graph-edges');
       //var ctx = this.canvas.getContext('2d');
@@ -229,12 +248,25 @@ export class CanvasComponent implements OnInit {
         
         this.drawing= false;
         this.drawLine(this.startPosition.pageX,this.startPosition.pageY,this.endPosition.pageX,this.endPosition.pageY);
-        this.connections.push({
-          "startNode":this.getNodeFromPort(this.startPosition.port),
-          "endNode":this.getNodeFromPort(this.endPosition.port),
-          "start":this.startPosition.port,
-          "end":this.endPosition.port
-        })
+        //console.log("SelfLoop",this.getNodeFromPort(this.startPosition.port),this.getNodeFromPort(this.endPosition.port))
+        if(this.getNodeFromPort(this.startPosition.port)!=this.getNodeFromPort(this.endPosition.port)){
+          /* This if condition is to avoid self loop */
+
+          this.connections.push({
+            "startNode":this.getNodeFromPort(this.startPosition.port),
+            "endNode":this.getNodeFromPort(this.endPosition.port),
+            "start":this.startPosition.port,
+            "end":this.endPosition.port
+          })
+
+
+
+        }else{
+          console.log("Self Loop",">>>>>>>>>>>>>>>>>>>")
+          this.refreshCanvas();
+          this.drawConnections();
+        }
+
       }else if(type=="output" && !this.drawing){
         /* Node name of selected port */
         this.startPortNode
@@ -246,10 +278,12 @@ export class CanvasComponent implements OnInit {
         }
         this.drawing= true;
       }else{
+
+        console.log("THIS >>>>>")
         this.drawing=false;
       }
 
-      console.log("node_name",this.connections)
+      //console.log("node_name",this.connections)
 
     }
 
