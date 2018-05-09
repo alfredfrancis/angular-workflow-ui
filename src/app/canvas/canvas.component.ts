@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+//import { port } from '_debugger';
 
 @Component({
   selector: 'app-canvas',
@@ -11,6 +12,7 @@ export class CanvasComponent implements OnInit {
       "last_node_count":0
     };
     currentNode:any;
+    currentNodeIndex:any;
   	nodes = [
       //   {
       //     name: "node_1", 
@@ -18,25 +20,14 @@ export class CanvasComponent implements OnInit {
       //     outputPorts: [{name: "node_1_output_1"},{name: "node_1_output_2"}],
       //     position: {x: 350, y: 100}, 
       //     isDragging: false 
-      // },
-      // {
-      //   name: "node_2", 
-      //   inputPort:{name: "node_2_input"},
-      //   outputPorts: [{name: "node_2_output_1"}],
-      //   position: {x: 300, y: 450},
-      //   isDragging: false 
-      // },
-      // {
-      //   name: "node_3", 
-      //   inputPort:{name: "node_3_input"},
-      //   outputPorts: [{name: "node_3_output_1"}],
-      //   position: {x: 600, y: 450},
-      //   isDragging: false 
       // }
     ]
 
     connections = [
       // {
+      //  ""startNode":
+      //  " endNode"
+      //   "node":"node_1" 
       //   "start":"node_1_output_1",
       //   "end":"node_2_input"
       // }
@@ -45,14 +36,18 @@ export class CanvasComponent implements OnInit {
   	edges = [];
   	selectedNode = this.nodes[0];
     connection: any = [];
+    canvas:HTMLCanvasElement;
     
     drawing: boolean =false;
     startPosition:any;
     endPosition:any;
+    startPortNode:any;
+    endPortNode:any;
 
   	constructor() { }
  	  
     ngOnInit() {
+      this.canvas = <HTMLCanvasElement>document.getElementById('graph-edges');
       this.nodes.map(function(node){
           let margin = 10; 
           let port_width = 15; 
@@ -75,6 +70,35 @@ export class CanvasComponent implements OnInit {
        });
     }
 
+
+    refreshCanvas(){
+
+      var ctx = this.canvas.getContext('2d');
+      ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    }
+
+    getNodeFromPort(portName){
+      console.log("portName",portName)
+
+      for (let node of this.nodes) {
+        console.log('node',node);
+        console.log('port_name',portName);
+        if (node.inputPort.name == portName){
+          console.log("matched")
+          return node.name
+
+        }
+        for (let port of node.outputPorts){
+          if (port.name == portName){
+            return node.name
+          }
+        }
+      }
+    }
+
+
+
     getPositionByID(div_id) {
       // find position of html element by its ID
       let el = document.getElementById(div_id);
@@ -94,9 +118,11 @@ export class CanvasComponent implements OnInit {
     }
 
     onDrag($event, node): void{
-      let canvas :HTMLCanvasElement = <HTMLCanvasElement>document.getElementById('graph-edges');
-      var ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      //let canvas :HTMLCanvasElement = <HTMLCanvasElement>document.getElementById('graph-edges');
+      //var ctx = this.canvas.getContext('2d');
+      //ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+      this.refreshCanvas()
 
       let relX: number = $event.pageX - node.dragStart.x; 
       let relY: number = $event.pageY - node.dragStart.y;
@@ -133,15 +159,56 @@ export class CanvasComponent implements OnInit {
       if(nodeIndex > 0){
         console.log("im null")
         this.nodes.splice(nodeIndex,1)
-      }else if(this.currentNode >= 0){
+      }else if(this.currentNodeIndex >= 0){
         console.log("im current node")
-        this.nodes.splice(this.currentNode,1)
+        this.nodes.splice(this.currentNodeIndex,1)
         console.log(this.nodes)
+        this.deleteConnections()
       }
     }
-    setCurrentNode(nodeIndex){
+
+    deleteConnections(){
+
+      console.log('Connections-old',this.connections)
+
+      // get input nodes and ouput nodes
+      let input_port = this.currentNode.name
+      console.log(this.currentNode,'input_port',input_port)
+
+      // pop incomming connections to selected node
+      this.connections = this.connections.filter((connection)=>{
+        console.log('connection.node != input_port',connection.node , input_port,connection.end != input_port)
+        if (connection.endNode != input_port){
+          return true
+        }
+      });
+
+      // pop outgoing connections to selected node
+      this.connections = this.connections.filter((connection)=>{
+        console.log('connection.node != input_port',connection.node , input_port,connection.end != input_port)
+        if (connection.startNode != input_port){
+          return true
+        }
+      });
+
+      console.log('Connections-New',this.connections)
+
+      // refresh canvas
+      this.refreshCanvas()
+
+      // redraw all connections
+      this.drawConnections()
+
+
+      
+      
+    }
+
+    setCurrentNode(nodeIndex,node){
       console.log("im selected",nodeIndex)
-      this.currentNode = nodeIndex
+      this.currentNodeIndex = nodeIndex
+      this.currentNode = node
+      console.log(this.currentNode)
     }
   
     /************************************************* Node events ends here ************************************************************** */
@@ -150,20 +217,28 @@ export class CanvasComponent implements OnInit {
 
     /************************************************* Connection events starts here ************************************************************** */
 
-    clikPort($event,port,type){
+    clikPort($event,node_name,port,type){
+      
+      
       if(this.drawing && type=="input"){
         this.endPosition={
           "pageX":$event.pageX,
           "pageY":$event.pageY,
           "port":port.name
         }
+        
         this.drawing= false;
         this.drawLine(this.startPosition.pageX,this.startPosition.pageY,this.endPosition.pageX,this.endPosition.pageY);
         this.connections.push({
+          "startNode":this.getNodeFromPort(this.startPosition.port),
+          "endNode":this.getNodeFromPort(this.endPosition.port),
           "start":this.startPosition.port,
           "end":this.endPosition.port
         })
       }else if(type=="output" && !this.drawing){
+        /* Node name of selected port */
+        this.startPortNode
+
         this.startPosition={
           "pageX":$event.pageX,
           "pageY":$event.pageY,
@@ -173,18 +248,23 @@ export class CanvasComponent implements OnInit {
       }else{
         this.drawing=false;
       }
+
+      console.log("node_name",this.connections)
+
     }
 
 
-    drawLine(x1,y1,x2,y2){
-  		let canvas :HTMLCanvasElement = <HTMLCanvasElement>document.getElementById('graph-edges');
 
-  		if(canvas == null ){
+
+    drawLine(x1,y1,x2,y2){
+  		//let canvas :HTMLCanvasElement = <HTMLCanvasElement>document.getElementById('graph-edges');
+
+  		if(this.canvas == null ){
   			throw Error("Canvas with given not found");
   		}
 
         console.log("drawing line")
-  		  var ctx = canvas.getContext('2d');
+  		  var ctx = this.canvas.getContext('2d');
   			ctx.beginPath();
         ctx.strokeStyle = 'green';
         //ctx.beginPath();
@@ -201,14 +281,14 @@ export class CanvasComponent implements OnInit {
   		let posX = $event.clientX; 
   		let posY = $event.clientY; 
 		
-  		let canvas :HTMLCanvasElement = <HTMLCanvasElement>document.getElementById('graph-edges');
+  		//let canvas :HTMLCanvasElement = <HTMLCanvasElement>document.getElementById('graph-edges');
 
-  		if(canvas == null ){
+  		if(this.canvas == null ){
   			throw Error("Canvas with given not found");
   		}
 
-  		if (canvas.getContext) {
-  		  var ctx = canvas.getContext('2d');
+  		if (this.canvas.getContext) {
+  		  var ctx = this.canvas.getContext('2d');
   			ctx.beginPath();
   			ctx.strokeStyle = 'green';
   			ctx.moveTo(posX, posY);

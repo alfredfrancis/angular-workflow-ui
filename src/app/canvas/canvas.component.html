@@ -11,15 +11,15 @@
 
 				<!--- node component begins here -->
 				<div class="node" draggable=true *ngFor="let node of nodes; let nodeIndex =index" [style.width.px]="node.width" [style.top.px]="node.position.y"
-				 [style.left.px]="node.position.x" (dragstart)="onDragStart($event, node)" (drag)="onDrag($event, node)" (dragend)="dragEnd($event, node)" (click)="setCurrentNode(nodeIndex)">
+				 [style.left.px]="node.position.x" (dragstart)="onDragStart($event, node)" (drag)="onDrag($event, node)" (dragend)="dragEnd($event, node)" (click)="setCurrentNode(nodeIndex,node)">
 
 
 					<div class="port-container input">
-						<div class="port" draggable=true [id]="node.inputPort.name" (click)="clikPort($event,node.inputPort,'input')"></div>
+						<div class="port" draggable=true [id]="node.inputPort.name" (click)="clikPort($event,node.name,node.inputPort,'input')"></div>
 					</div>
 
 					<div class="port-container output">
-						<div class="port" draggable=true [id]="port.name" *ngFor="let port of node.outputPorts.reverse()" (click)="clikPort($event,port,'output')"
+						<div class="port" draggable=true [id]="port.name" *ngFor="let port of node.outputPorts.reverse()" (click)="clikPort($event,node.name,port,'output')"
 						 (dragstart)="link($event, port)" (drag)="dragLink($event, port)" (dragend)="createLink($event, port)"></div>
 					</div>
 
@@ -37,3 +37,4 @@
 	</div>
 
 </div>
+
