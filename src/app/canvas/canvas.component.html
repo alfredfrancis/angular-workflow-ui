@@ -1,8 +1,6 @@
 <!-- <canvas class="graph-container" id="graph-edges" width="500" height="800"> -->
-<div style="display: flex;flex-direction: row">
-
 	<div class="canvas-container">
-		<canvas class="graph-container" id="graph-edges" width="1500" height="600">
+		<canvas class="graph-container" id="graph-edges">
 		</canvas>
 
 		<div class="graph-container" id="graph-nodes" ondragover="return false" (mousemove) ="mouseEnter($event)" (keydown.Delete)="onDeleteConnnection($event)"> 
@@ -31,10 +29,7 @@
 		</div>
 	</div>
 
-	<div style="z-index: 9999999999999;">
+	<!-- <div style="z-index: 9999999999999;">
 		<button (click)="addNode()">Add node</button>
 		<button (click)="deleteNode()">Delete node</button>
-	</div>
-
-</div>
-
+	</div> -->

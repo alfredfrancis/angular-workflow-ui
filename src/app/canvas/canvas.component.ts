@@ -15,22 +15,29 @@ export class CanvasComponent implements OnInit {
     currentNode:any;
     currentNodeIndex:any;
   	nodes = [
-      //   {
-      //     name: "node_1", 
-      //     inputPort: {name: "node_1_input"},
-      //     outputPorts: [{name: "node_1_output_1"},{name: "node_1_output_2"}],
-      //     position: {x: 350, y: 100}, 
-      //     isDragging: false 
-      // }
+        {
+          name: "node_1", 
+          inputPort: {name: "node_1_input"},
+          outputPorts: [{name: "node_1_output_1"},{name: "node_1_output_2"}],
+          position: {x: 350, y: 100}, 
+          isDragging: false 
+      },
+      {
+        name: "node_2", 
+        inputPort: {name: "node_2_input"},
+        outputPorts: [{name: "node_2_output_1"},{name: "node_2_output_2"}],
+        position: {x: 350, y: 500}, 
+        isDragging: false 
+    }
     ]
 
     connections = [
-      // {
-      //  ""startNode":
-      //  " endNode"
-      //   "start":"node_1_output_1",
-      //   "end":"node_2_input"
-      // }
+      {
+        "startNode":"node_1",
+        "endNode":"node_2",
+        "start":"node_1_output_1",
+        "end":"node_2_input"
+      }
     ]
 
   	edges = [];
@@ -62,6 +69,11 @@ export class CanvasComponent implements OnInit {
     
 
     ngAfterViewInit(){
+      var canvas = <HTMLCanvasElement> document.getElementById('graph-edges');
+      var divHeight = document.getElementById('graph-nodes').clientHeight;
+      var divWidth = document.getElementById('graph-nodes').clientWidth;
+      canvas.height = divHeight;
+      canvas.width = divWidth;
       // Render Flow connections from JSON Data
       this.drawConnections()
     }
@@ -197,7 +209,7 @@ export class CanvasComponent implements OnInit {
 
       // pop incomming connections to selected node
       this.connections = this.connections.filter((connection)=>{
-        console.log('connection.node != input_port',connection.node , input_port,connection.end != input_port)
+        console.log('connection.node != input_port',connection.endNode , input_port,connection.end != input_port)
         if (connection.endNode != input_port){
           return true
         }
@@ -205,7 +217,7 @@ export class CanvasComponent implements OnInit {
 
       // pop outgoing connections to selected node
       this.connections = this.connections.filter((connection)=>{
-        console.log('connection.node != input_port',connection.node , input_port,connection.end != input_port)
+        console.log('connection.node != input_port',connection.startNode , input_port,connection.end != input_port)
         if (connection.startNode != input_port){
           return true
         }

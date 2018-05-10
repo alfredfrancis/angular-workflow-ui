@@ -1,21 +1,26 @@
+.canvas-container{
+	height: 100%;
+	width: 100%;
+	background-color: red;
+}
+
 .graph-container{
 	position: absolute;
 	display: inline-block;
-	
-	height: 600px;
-	width: 1500px;
-
 	border: 1px solid black;
 
 }
 
 #graph-edges{
-	background-color: #fff;
+	background-color: lightgray;
 }
 
 #graph-nodes{
+	height: 100%;
+	width: 100%;
 	background-color: transparent;
 	overflow: hidden;
+	border:3px solid green;
 }
 
 .node-container{
