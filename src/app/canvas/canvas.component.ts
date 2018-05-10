@@ -302,11 +302,22 @@ export class CanvasComponent implements OnInit {
 
     }
 
-
+    getXYOffsets(){
+    // get offsets for graph-nodes div
+    let el = document.getElementById('graph-nodes')
+    for (var lx=0, ly=0;
+      el != null;
+      lx += el.offsetLeft, ly += el.offsetTop, el = <HTMLElement> el.offsetParent);
+      return {x: lx,y: ly};
+    }
 
 
     drawLine(x1,y1,x2,y2){
   		//let canvas :HTMLCanvasElement = <HTMLCanvasElement>document.getElementById('graph-edges');
+
+      let offsets = this.getXYOffsets()
+      let x_offset = offsets.x
+      let y_offset = offsets.y
 
   		if(this.canvas == null ){
   			throw Error("Canvas with given not found");
@@ -318,8 +329,8 @@ export class CanvasComponent implements OnInit {
         ctx.strokeStyle = 'green';
         //ctx.beginPath();
         ctx.lineWidth = 5;
-        ctx.moveTo(x1, y1);
-  			ctx.lineTo(x2, y2);
+        ctx.moveTo(x1-x_offset, y1-y_offset);
+  			ctx.lineTo(x2-x_offset,y2-y_offset);
   			// ctx.arcTo(this.endPosition["pageX"], this.startPosition["pageY"],this.endPosition["pageX"], this.endPosition["pageY"],20);
   			ctx.stroke();
 
