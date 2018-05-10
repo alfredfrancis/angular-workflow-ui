@@ -1,9 +1,12 @@
 .graph-container{
 	position: absolute;
 	display: inline-block;
+	
 	height: 600px;
 	width: 1500px;
+
 	border: 1px solid black;
+
 }
 
 #graph-edges{
