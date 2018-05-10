@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 //import { port } from '_debugger';
+import { HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-canvas',
@@ -334,6 +335,23 @@ export class CanvasComponent implements OnInit {
   		}
   	}
 
+    @HostListener('document:keypress', ['$event'])
+    handleKeyboardEvent(event: KeyboardEvent) { 
+      console.log(event)
+      if (event.key === "Delete") {
+        this.drawing = false;
+        this.connections = this.connections.filter((connection)=>{
+          if (connection.start != this.startPosition.port){
+            return true
+          }
+        });
+        console.log("deleted",this.connections )
+        this.refreshCanvas();
+        this.drawConnections();
+
+    }
+    
+    }
 
     /************************************************* Connection events ends here ************************************************************** */
 

@@ -5,7 +5,7 @@
 		<canvas class="graph-container" id="graph-edges" width="1500" height="600">
 		</canvas>
 
-		<div class="graph-container" id="graph-nodes" ondragover="return false" (mousemove) ="mouseEnter($event)"> 
+		<div class="graph-container" id="graph-nodes" ondragover="return false" (mousemove) ="mouseEnter($event)" (keydown.Delete)="onDeleteConnnection($event)"> 
 
 			<div class="node-container"  >
 
@@ -20,7 +20,7 @@
 
 					<div class="port-container output">
 						<div class="port" draggable=true [id]="port.name" *ngFor="let port of node.outputPorts.reverse()" (click)="clikPort($event,node.name,port,'output')"
-						 (dragstart)="link($event, port)" (drag)="dragLink($event, port)" (dragend)="createLink($event, port)"></div>
+						 (dragstart)="link($event, port)" (drag)="dragLink($event, port)" (dragend)="createLink($event, port)"  ></div>
 					</div>
 
 				</div>
