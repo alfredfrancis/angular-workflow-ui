@@ -322,18 +322,18 @@ export class CanvasComponent implements OnInit {
       let x_offset = offsets.x
       let y_offset = offsets.y
 
-      x1 = x1-x_offset
-      y1 = y1-y_offset
-      x2 = x2-x_offset
-      y2 = y2-y_offset
+      x1 = (x1-x_offset)+10
+      y1 = (y1-y_offset)+10
+      x2 = (x2-x_offset)+10
+      y2 = (y2-y_offset)
 
-      var ang1 = 90;  // in radians
+      var ang1 = 190;  // in radians
       var ang2 = 90;
 
       var len =  Math.hypot(x2-x1,y2-y1);
 
       var ax1 = Math.cos(ang1) * len * (1/3); 
-      var ay1 = Math.sin(ang1) * len * (1/3);
+      var ay1 = Math.cos(ang1) * len * (1/3);
 
       var ax2 = Math.cos(ang2) * len * (1/3); 
       var ay2 = Math.sin(ang2) * len * (1/3);
