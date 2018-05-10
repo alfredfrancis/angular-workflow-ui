@@ -284,6 +284,8 @@ export class CanvasComponent implements OnInit {
       }
 
       //console.log("node_name",this.connections)
+      this.refreshCanvas();
+      this.drawConnections();
 
     }
 
