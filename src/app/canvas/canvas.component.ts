@@ -314,25 +314,47 @@ export class CanvasComponent implements OnInit {
 
     drawLine(x1,y1,x2,y2){
   		//let canvas :HTMLCanvasElement = <HTMLCanvasElement>document.getElementById('graph-edges');
+  		if(this.canvas == null ){
+  			throw Error("Canvas with given not found");
+  		}
 
       let offsets = this.getXYOffsets()
       let x_offset = offsets.x
       let y_offset = offsets.y
 
-  		if(this.canvas == null ){
-  			throw Error("Canvas with given not found");
-  		}
+      x1 = x1-x_offset
+      y1 = y1-y_offset
+      x2 = x2-x_offset
+      y2 = y2-y_offset
 
-        console.log("drawing line")
-  		  var ctx = this.canvas.getContext('2d');
-  			ctx.beginPath();
-        ctx.strokeStyle = 'green';
-        //ctx.beginPath();
-        ctx.lineWidth = 5;
-        ctx.moveTo(x1-x_offset, y1-y_offset);
-  			ctx.lineTo(x2-x_offset,y2-y_offset);
-  			// ctx.arcTo(this.endPosition["pageX"], this.startPosition["pageY"],this.endPosition["pageX"], this.endPosition["pageY"],20);
-  			ctx.stroke();
+      var ang1 = 90;  // in radians
+      var ang2 = 90;
+
+      var len =  Math.hypot(x2-x1,y2-y1);
+
+      var ax1 = Math.cos(ang1) * len * (1/3); 
+      var ay1 = Math.sin(ang1) * len * (1/3);
+
+      var ax2 = Math.cos(ang2) * len * (1/3); 
+      var ay2 = Math.sin(ang2) * len * (1/3);
+
+
+
+
+      console.log("drawing line")
+      var ctx = this.canvas.getContext('2d');
+      ctx.beginPath();
+      ctx.strokeStyle = 'green';
+      // //ctx.beginPath();
+      ctx.lineWidth = 5;
+      ctx.moveTo(x1,y1);
+      ctx.bezierCurveTo(
+          x1 + ax1, y1 + ay1,
+          x2 - ax1, y2 - ay2,
+          x2, y2
+      );
+      // ctx.arcTo(this.endPosition["pageX"], this.startPosition["pageY"],this.endPosition["pageX"], this.endPosition["pageY"],20);
+      ctx.stroke();
 
     }
 
