@@ -12,6 +12,8 @@ export class CanvasComponent implements OnInit {
     settings = {
       "last_node_count":0
     };
+    onport = false;
+
     currentNode:any;
     currentNodeIndex:any;
   	nodes = [
@@ -83,7 +85,7 @@ export class CanvasComponent implements OnInit {
       this.connections.map((connection)=>{
         let startPos = this.getPositionByID(connection.start)
         let endPos = this.getPositionByID(connection.end)
-        this.drawLine(startPos.left,startPos.top,endPos.left,endPos.top)
+        this.drawLine(startPos.left,startPos.top,endPos.left,endPos.top,false)
        });
     }
 
@@ -113,18 +115,27 @@ export class CanvasComponent implements OnInit {
         }
       }
     }
+    setMouseOver(bool){
+      this.onport = bool;
+    }
+    mousedown(){
+      if(!this.onport){
+        console.log("mousedown")
+        this.drawing=false;
+        this.refreshCanvas();
+        this.drawConnections()
+      }
 
+    }
 
     mouseEnter(events){
       if (this.drawing){
         //console.log("mouse enter : " + events.x);
         //console.log("mouse enter : " + events.y);
         this.refreshCanvas();
-        this.drawLine(this.startPosition.pageX,this.startPosition.pageY,events.x,events.y);
         this.drawConnections()
         //this.refreshCanvas();
-       
-
+        this.drawLine(this.startPosition.pageX,this.startPosition.pageY,events.x,events.y,true);
       }
       
    }
@@ -312,7 +323,7 @@ export class CanvasComponent implements OnInit {
     }
 
 
-    drawLine(x1,y1,x2,y2){
+     drawLine(x1,y1,x2,y2,dashed=false){
   		//let canvas :HTMLCanvasElement = <HTMLCanvasElement>document.getElementById('graph-edges');
   		if(this.canvas == null ){
   			throw Error("Canvas with given not found");
@@ -344,6 +355,13 @@ export class CanvasComponent implements OnInit {
       console.log("drawing line")
       var ctx = this.canvas.getContext('2d');
       ctx.beginPath();
+
+      // if(this.drawing && dashed){
+      //   console.log('im working')
+      //   ctx.setLineDash([5, 3]);
+        
+      // }
+      
       ctx.strokeStyle = 'green';
       // //ctx.beginPath();
       ctx.lineWidth = 5;
@@ -355,6 +373,7 @@ export class CanvasComponent implements OnInit {
       );
       // ctx.arcTo(this.endPosition["pageX"], this.startPosition["pageY"],this.endPosition["pageX"], this.endPosition["pageY"],20);
       ctx.stroke();
+      
 
     }
 
